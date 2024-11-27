@@ -6,14 +6,14 @@ from database import Base
 class Customer(Base):
     __tablename__ = 'customers'
     id = Column(Integer, primary_key=True)
-    customer_number = Column(String, unique=True, nullable=False)
+    customer_number = Column(String(10), unique=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
-    order_number = Column(String, unique=True, nullable=False)
+    order_number = Column(String(10), unique=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -43,10 +43,13 @@ def generate_prefixed_number(prefix, model):
     """
     from database import db_session
 
+    # Determine the prefix based on the model
+    number_prefix = 'C-' if model.__name__ == 'Customer' else 'O-'
+
     # Get the last record's number for this prefix
     last_record = db_session.query(model).filter(
-        model.order_number.startswith(prefix) if model.__name__ == 'Order'
-        else model.customer_number.startswith(prefix)
+        model.order_number.startswith(number_prefix + prefix) if model.__name__ == 'Order'
+        else model.customer_number.startswith(number_prefix + prefix)
     ).order_by(
         model.id.desc()
     ).first()
@@ -55,10 +58,10 @@ def generate_prefixed_number(prefix, model):
         # Extract the numeric part and increment
         last_number = (last_record.order_number if model.__name__ == 'Order'
                        else last_record.customer_number)
-        numeric_part = int(last_number[2:])
-        new_number = f"{prefix}{numeric_part + 1:04d}"
+        numeric_part = int(last_number.split('-')[1][4:])
+        new_number = f"{number_prefix}{prefix}{numeric_part + 1:05d}"
     else:
         # First number for this prefix
-        new_number = f"{prefix}0001"
+        new_number = f"{number_prefix}{prefix}00001"
 
     return new_number

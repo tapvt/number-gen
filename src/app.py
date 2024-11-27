@@ -82,31 +82,49 @@ def logout():
 @app.route('/generate_customer', methods=['POST'])
 @login_required
 def generate_customer():
-    year_prefix = datetime.now().strftime('%y')
-    customer_number = generate_prefixed_number(year_prefix, Customer)
+    try:
+        year_prefix = datetime.now().strftime('%y')
+        customer_number = generate_prefixed_number(year_prefix, Customer)
 
-    new_customer = Customer(customer_number=customer_number)
-    db_session.add(new_customer)
-    db_session.commit()
+        new_customer = Customer(customer_number=customer_number)
+        db_session.add(new_customer)
+        db_session.commit()
 
-    return jsonify({
-        'customer_number': customer_number
-    })
+        return jsonify({
+            'customer_number': customer_number,
+            'success': True
+        })
+    except Exception as e:
+        db_session.rollback()
+        return jsonify({
+            'customer_number': None,
+            'success': False,
+            'error': str(e)
+        }), 500
 
 
 @app.route('/generate_order', methods=['POST'])
 @login_required
 def generate_order():
-    year_prefix = datetime.now().strftime('%y')
-    order_number = generate_prefixed_number(year_prefix, Order)
+    try:
+        year_prefix = datetime.now().strftime('%y')
+        order_number = generate_prefixed_number(year_prefix, Order)
 
-    new_order = Order(order_number=order_number)
-    db_session.add(new_order)
-    db_session.commit()
+        new_order = Order(order_number=order_number)
+        db_session.add(new_order)
+        db_session.commit()
 
-    return jsonify({
-        'order_number': order_number
-    })
+        return jsonify({
+            'order_number': order_number,
+            'success': True
+        })
+    except Exception as e:
+        db_session.rollback()
+        return jsonify({
+            'order_number': None,
+            'success': False,
+            'error': str(e)
+        }), 500
 
 
 @app.teardown_appcontext

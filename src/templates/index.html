@@ -25,6 +25,9 @@
             justify-content: space-between;
             margin-bottom: 20px;
         }
+        .error {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -51,8 +54,22 @@
                 fetch('/generate_customer', { method: 'POST' })
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('result').textContent = 
-                            `Generated Customer Number: ${data.customer_number}`;
+                        const resultElement = document.getElementById('result');
+                        if (data.success && data.customer_number) {
+                            resultElement.classList.remove('error');
+                            resultElement.textContent =
+                                `Generated Customer Number: ${data.customer_number}`;
+                        } else {
+                            resultElement.classList.add('error');
+                            resultElement.textContent =
+                                `Error generating customer number: ${data.error || 'Unknown error'}`;
+                        }
+                    })
+                    .catch(error => {
+                        const resultElement = document.getElementById('result');
+                        resultElement.classList.add('error');
+                        resultElement.textContent =
+                            `Network error generating customer number: ${error.message}`;
                     });
             }
 
@@ -60,8 +77,22 @@
                 fetch('/generate_order', { method: 'POST' })
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('result').textContent = 
-                            `Generated Order Number: ${data.order_number}`;
+                        const resultElement = document.getElementById('result');
+                        if (data.success && data.order_number) {
+                            resultElement.classList.remove('error');
+                            resultElement.textContent =
+                                `Generated Order Number: ${data.order_number}`;
+                        } else {
+                            resultElement.classList.add('error');
+                            resultElement.textContent =
+                                `Error generating order number: ${data.error || 'Unknown error'}`;
+                        }
+                    })
+                    .catch(error => {
+                        const resultElement = document.getElementById('result');
+                        resultElement.classList.add('error');
+                        resultElement.textContent =
+                            `Network error generating order number: ${error.message}`;
                     });
             }
         </script>

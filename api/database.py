@@ -23,6 +23,10 @@ def get_database_url():
         logger.error("POSTGRES_URL environment variable is not set!")
         raise ValueError("Database connection URL is required. Set POSTGRES_URL environment variable.")
 
+    # Convert 'postgres://' to 'postgresql://' for SQLAlchemy
+    if DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+
     # Optional: Add additional validation for the URL
     try:
         parsed_url = urllib.parse.urlparse(DATABASE_URL)
