@@ -1,0 +1,26 @@
+# Python virtual environment
+venv/
+*.pyc
+__pycache__/
+
+# Environment files
+.env
+*.env
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vercel deployment
+.vercel
+
+# Dependency directories
+node_modules/
+
+# Logs
+*.log
+
+# macOS system files
+.DS_Store

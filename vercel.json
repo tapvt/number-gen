@@ -1,0 +1,19 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "src/app.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "src/app.py"
+        }
+    ],
+    "env": {
+        "POSTGRES_URL": "@postgres_url",
+        "FLASK_SECRET_KEY": "@flask_secret_key"
+    }
+}
