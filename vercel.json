@@ -7,7 +7,8 @@
             "config": {
                 "runtime": "python3.12",
                 "maxLambdaSize": "15mb",
-                "handler": "handler"
+                "handler": "handler",
+                "buildCommand": "pip install --upgrade pip && pip install wheel setuptools && pip install -r api/requirements.txt"
             }
         }
     ],
@@ -18,7 +19,13 @@
         }
     ],
     "env": {
-        "POSTGRES_URL": "${POSTGRES_URL}",
-        "FLASK_SECRET_KEY": "${FLASK_SECRET_KEY}"
+        "POSTGRES_URL": "@postgres_url",
+        "FLASK_SECRET_KEY": "@flask_secret_key"
+    },
+    "build": {
+        "env": {
+            "POSTGRES_URL": "@postgres_url",
+            "FLASK_SECRET_KEY": "@flask_secret_key"
+        }
     }
 }
